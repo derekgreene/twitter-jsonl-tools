@@ -7,7 +7,7 @@ Tested with Python 3.6, and requiring the following packages, which are availabl
 
 * [prettytable >= 0.7.2](https://code.google.com/p/prettytable/)
 
-### Basic Usage - Tweets
+### Basic Usage: Tweets
 
 The tools used to process tweets expect one or more JSONL files as inputs, where each line contains a JSON-formatted tweet as retrieved from the Twitter API.
 
@@ -27,6 +27,14 @@ To get list of the most frequently-appearing hashtags for a JSONL file containin
 
 	python jsonl-tweet-hashtags.py sample/sample-tweets-500.jsonl
 
-To export all tweets in a simple CSV (comma-separated) format:
+To export all tweets to a simple CSV (comma-separated) format:
 	
 	python jsonl-tweet-export.py sample/sample-tweets-500.jsonl -o sample/sample-tweets.csv
+
+### Basic Usage: Users
+
+The tools used to process user data expect one or more JSONL files as inputs, where each line contains a JSON-formatted user profile data as retrieved from the Twitter API.
+
+To export all user metadata to a simple CSV (comma-separated) format:
+	
+	python jsonl-user-export.py sample/sample-users-50.jsonl -o sample/sample-users.csv

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 """
-A very simple script to export tweets from a JSONL file in CSV format.
+A very simple script to export user metadata from a JSONL file in CSV format.
 
 Sample usage:
-python jsonl-tweet-export.py sample/sample-tweets-500.jsonl -o sample/sample-tweets.csv
+python jsonl-user-export.py sample/sample-users-50.jsonl -o sample/sample-users.csv
 """
 import sys, fileinput, codecs, re
 from datetime import datetime
@@ -21,15 +21,17 @@ def fmt_id( x ):
 	return '"%s"' % x
 
 def norm( s, sep ):
+	if s is None or len(s) == 0:
+		return ""
 	s = s.replace(sep, " ")
-	return re.sub("\s+", " ", s )
+	return re.sub("\s+", " ", s ).strip()
 
 # --------------------------------------------------------------
 
 def main():
 	parser = OptionParser(usage="usage: %prog [options] json_file1 json_file2 ...")
 	parser.add_option("-t", "--top", action="store", type="int", dest="top", help="number of top authors to display", default=10)
-	parser.add_option("-o", action="store", type="string", dest="out_path", help="output path for CSV file", default="tweets.csv")
+	parser.add_option("-o", action="store", type="string", dest="out_path", help="output path for CSV file", default="users.csv")
 	parser.add_option("-s", action="store", type="string", dest="separator", help="separator character for output file (default is comma)", default=",")
 	(options, args) = parser.parse_args()	
 	if( len(args) < 1 ):
@@ -38,33 +40,35 @@ def main():
 	sep = options.separator
 
 	log.info("Tweets will be written to %s ..." % options.out_path )
-	header = ["Tweet_ID", "Created_At", "Author_Screen_Name", "Author_Id", "Text" ]
+	header = ["User_ID", "Screen_Name", "Name", "Followers_count", "Friends_Count", "Tweets_Count", "Created_At", "Language", "Location", "Description" ]
 
 	fout = codecs.open( options.out_path, "w", encoding="utf-8", errors="ignore" )
 	fout.write("%s\n" % sep.join(header) )
 
-	for tweets_path in args:
-		log.info("Loading tweets from %s ..." % tweets_path)
+	for users_path in args:
+		log.info("Loading user metadata from %s ..." % users_path)
 		# Process every line as JSON data
-		num_tweets, num_failed, line_number = 0, 0, 0
-		for l in fileinput.input(tweets_path):
+		num_users, num_failed, line_number = 0, 0, 0
+		for l in fileinput.input(users_path):
 			l = l.strip()
 			if len(l) == 0:
 				continue
 			try:
 				line_number += 1
-				tweet = json.loads(l)
-				sdate = parse_twitter_date(tweet["created_at"]).strftime("%Y-%m-%d %H:%M:%S")
-				values = [ fmt_id(tweet["id"]), sdate, norm(tweet["user"]["screen_name"], sep).lower(), fmt_id(tweet["user"]["id"]), norm(tweet["text"], sep) ]
+				user = json.loads(l)
+				values = [ fmt_id(user["id"]), norm(user["screen_name"],sep).lower(), norm(user["name"],sep) ]
+				sdate = parse_twitter_date(user["created_at"]).strftime("%Y-%m-%d %H:%M:%S")
+				values += [ str(user["followers_count"]), str(user["friends_count"]), str(user["statuses_count"]), sdate ]
+				values += [ norm(user["lang"],sep), norm(user["location"],sep), norm(user["description"],sep) ]
 				fout.write("%s\n" % sep.join(values) )
-				num_tweets += 1
+				num_users += 1
 				if line_number % 50000 == 0:
 					log.info("Processed %d lines" % line_number)
 			except Exception as e:
 				log.error("Failed to parse tweet on line %d: %s" % ( line_number, e ) )
 				num_failed += 1
 		fileinput.close()
-		log.info("Wrote %d tweets" % num_tweets )
+		log.info("Wrote %d users" % num_users )
 		fout.flush()
 
 	fout.close()
