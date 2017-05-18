@@ -31,6 +31,10 @@ To export all tweets to a simple CSV (comma-separated) format:
 	
 	python jsonl-tweet-export.py sample/sample-tweets-500.jsonl -o sample/sample-tweets.csv
 
+To generate a tab-separated CSV file containing pairwise hashtag cooccurrence frequencies for one or more JSONL files:
+
+	python jsonl-hashtag-cooccur.py sample/sample-tweets-500.jsonl -o hashtag-cooccurrences.csv
+
 ### Basic Usage: Users
 
 The tools used to process user data expect one or more JSONL files as inputs, where each line contains a JSON-formatted user profile data as retrieved from the Twitter API.
