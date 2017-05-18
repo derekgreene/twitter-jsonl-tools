@@ -10,8 +10,10 @@ import sys, fileinput, operator
 from optparse import OptionParser
 from collections import defaultdict
 import logging as log
-import json
-#import ujson as json 
+try:
+	import ujson as json 
+except:
+	import json
 
 # --------------------------------------------------------------
 
