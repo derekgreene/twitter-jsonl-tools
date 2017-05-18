@@ -7,6 +7,8 @@ Tested with Python 3.6, and requiring the following packages, which are availabl
 
 * [prettytable >= 0.7.2](https://code.google.com/p/prettytable/)
 
+For faster JSON decoding, the scripts optionally support the use of the [UltraJSON package](https://pypi.python.org/pypi/ujson).
+
 ### Basic Usage: Tweets
 
 The tools used to process tweets expect one or more JSONL files as inputs, where each line contains a JSON-formatted tweet as retrieved from the Twitter API.
