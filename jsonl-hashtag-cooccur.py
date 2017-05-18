@@ -10,11 +10,11 @@ import sys, fileinput, itertools, operator, codecs
 from collections import defaultdict
 from optparse import OptionParser
 import logging as log
-from prettytable import PrettyTable
 try:
 	import ujson as json 
 except:
 	import json
+from prettytable import PrettyTable
 
 # --------------------------------------------------------------
 
@@ -82,7 +82,7 @@ def main():
 
 	# Display top counts
 	sx = sorted(pair_counts.items(), key=operator.itemgetter(1), reverse=True)
-	log.info("Top %d co-occurring pairs:" % min( len(sx), options.top ) )
+	log.info("Top %d co-occurring hashtag pairs:" % min( len(sx), options.top ) )
 	tab = PrettyTable( ["Hashtag1", "Hashtag2", "Count"] )
 	tab.align["Hashtag1"] = "l"
 	tab.align["Hashtag2"] = "l"

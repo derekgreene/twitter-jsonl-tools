@@ -9,13 +9,20 @@ import sys, fileinput, codecs, re
 from datetime import datetime
 from optparse import OptionParser
 import logging as log
-import json
-#import ujson as json 
+try:
+	import ujson as json 
+except:
+	import json
 
 # --------------------------------------------------------------
 
-def parse_twitter_date( s ):
-    return datetime.strptime(s,'%a %b %d %H:%M:%S %z %Y')
+def parse_twitter_date( s, ignore_time_zones = True ):
+	# hack for cases where timezone is not supported by Python strptime 
+	if ignore_time_zones:
+		parts = s.split(" ")
+		smodified =" ".join( parts[0:4] + [ parts[-1] ] )
+		return  datetime.strptime(smodified,'%a %b %d %H:%M:%S %Y')
+	return datetime.strptime(s,'%a %b %d %H:%M:%S %z %Y')
 
 def fmt_id( x ):
 	return '"%s"' % x
